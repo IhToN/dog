@@ -1,6 +1,12 @@
-main: src/dog.c
-	mkdir -p bin
-	gcc src/dog.c src/utils.h src/dogos.h -o bin/dog 
+sources = src/dog.c src/functions.h src/dogos.h
+bindir = bin
+
+main: $(bindir)
+	gcc $(sources) -o $(bindir)/dog 
+
+$(bindir): $(sources)
+	mkdir -p $(bindir)
+
 
 .SILENT: install
 install:
