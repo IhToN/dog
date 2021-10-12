@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <time.h>
 #include "functions.h"
 #include "dogos.h"
 #include "dogos.c"
@@ -20,13 +21,15 @@ int main(int argc, char *argv[]) {
 	int opt;
 	int long_index = 0;
 
+	srand(time(0));
+
 	snprintf(bark, MAX_SIZE_BARK, "%s", "Whoof!");
 	snprintf(dog_version, MAX_SIZE_VERSION, "Dog, v%s", version);
 
 	static struct option long_options[] = {
 		{"help", no_argument, 0, 'h'},
 		{"bork", no_argument, 0, 'b'},
-		{"doggo",  required_argument, 0,  'd' },
+		{"doggo",  optional_argument, 0,  'd' },
 		{"file",  required_argument, 0,  'f' },
 		{"guau", no_argument, 0, 'g'},
 		{"message",  required_argument, 0,  'm' },
@@ -38,7 +41,7 @@ int main(int argc, char *argv[]) {
 	if (argv[optind] == NULL) {
 		render(bark, true);
 	} else {
-		if ((opt = getopt_long(argc, argv, "hbgm:f:d:vw", long_options, &long_index)) != -1) {
+		if ((opt = getopt_long(argc, argv, "hbgm:f:d::vw", long_options, &long_index)) != -1) {
 			switch (opt) {
 				case 'h':					
 					render(dog_version, false);
@@ -65,6 +68,10 @@ int main(int argc, char *argv[]) {
 					break;
 
 				case 'd':
+					if (optarg == NULL && optind < argc && argv[optind][0] != '-')
+					{
+						optarg = argv[optind++];
+					}
 					renderDoggo(bark, optarg, true);
 					break;
 
@@ -100,7 +107,13 @@ int main(int argc, char *argv[]) {
 void renderDoggo(char* bark, char* doggostr, int finish) {
 	char buffer[MAX_SIZE_RENDER];
 
-	long doggo_num = strtol(doggostr, NULL, 10);
+
+	long doggo_num;
+	if (doggostr == NULL) {
+		doggo_num = (rand() % available_doggos) + 1;
+	} else {
+		doggo_num = strtol(doggostr, NULL, 10);
+	}
 
 	if(doggo_num < 0 || doggo_num > available_doggos) {
 		printf("Dog not found. Available doggos: %d\n", available_doggos);
