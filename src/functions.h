@@ -9,6 +9,7 @@
 
 const char* version = "0.0.4";
 
+void renderDoggo(char* bark, char* doggostr, int finish);
 void render(char* bark, int finish);
 void renderFile(char* filepath);
 char* paramsToString(int argc, char *argv[]);

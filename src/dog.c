@@ -7,6 +7,7 @@
 #include <getopt.h>
 #include "functions.h"
 #include "dogos.h"
+#include "dogos.c"
 
 static const uint8_t MAX_SIZE_BARK = 64;
 static const uint8_t MAX_SIZE_VERSION = 24;
@@ -25,6 +26,7 @@ int main(int argc, char *argv[]) {
 	static struct option long_options[] = {
 		{"help", no_argument, 0, 'h'},
 		{"bork", no_argument, 0, 'b'},
+		{"doggo",  required_argument, 0,  'd' },
 		{"file",  required_argument, 0,  'f' },
 		{"guau", no_argument, 0, 'g'},
 		{"message",  required_argument, 0,  'm' },
@@ -36,7 +38,7 @@ int main(int argc, char *argv[]) {
 	if (argv[optind] == NULL) {
 		render(bark, true);
 	} else {
-		if ((opt = getopt_long(argc, argv, "hbgm:f::vw", long_options, &long_index)) != -1) {
+		if ((opt = getopt_long(argc, argv, "hbgm:f:d:vw", long_options, &long_index)) != -1) {
 			switch (opt) {
 				case 'h':					
 					render(dog_version, false);
@@ -52,6 +54,7 @@ int main(int argc, char *argv[]) {
 					printf("    -g, --guau               Dog goes 'guau' (spanish version).\n");
 					printf("    -m, --message            Dog will say your message.\n");
 					printf("    -f, --file  [FILE]       Dog will say every line of the specified file.\n");
+					printf("    -d, --doggo [NUM]        Specify the doggo.\n");
 					printf("    -v, --version            Prints dog version.\n");
 					printf("    -w, --who-is-a-good-boy  Who's a good boy? You're a good boy!.\n");
 					break;
@@ -59,6 +62,10 @@ int main(int argc, char *argv[]) {
 				case 'b':
 					snprintf(bark, MAX_SIZE_BARK, "%s", "Bork!");
 					render(bark, true);
+					break;
+
+				case 'd':
+					renderDoggo(bark, optarg, true);
 					break;
 
 				case 'f':
@@ -90,10 +97,34 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+void renderDoggo(char* bark, char* doggostr, int finish) {
+	char buffer[MAX_SIZE_RENDER];
+
+	long doggo_num = strtol(doggostr, NULL, 10);
+
+	if(doggo_num < 0 || doggo_num > available_doggos) {
+		printf("Dog not found. Available doggos: %d\n", available_doggos);
+		exit(EXIT_FAILURE);
+	} else {
+		switch(doggo_num) {
+			case 1:
+				renderDogOne(bark);
+				break;
+			case 2:
+				renderDogTwo(bark);
+				break;
+		}
+	}
+
+	if(finish == true) {
+		exit(EXIT_SUCCESS);
+	}
+}
+
 void render(char* bark, int finish) {
 	char buffer[MAX_SIZE_RENDER];
 
-	for (int i = 0; i<12; i++) {
+	for (int i = 0; i<5; i++) {
 		if (i != 2) {
 			snprintf(buffer, MAX_SIZE_RENDER, "%s", dog_one[i]);
 		} else {
@@ -102,7 +133,7 @@ void render(char* bark, int finish) {
 		printf("%s\n", buffer);
 	}
 	if(finish == true) {
-		exit(0);
+		exit(EXIT_SUCCESS);
 	}
 }
 
@@ -112,11 +143,18 @@ void renderFile(char* filepath) {
 	size_t len = 0;
 	ssize_t read;
 
+	printf("1\n");
+
 	fp = fopen(filepath, "r");
-	if (fp == NULL)
+	if (fp == NULL) {
+		printf("File %s not found\n", filepath);
         exit(EXIT_FAILURE);
+	}
+
+	printf("2\n");
 
 	while ((read = getline(&line, &len, fp)) != -1) {
+		printf("3\n");
 		clearScreen();
 		render(line, false);
 		sleep(1);

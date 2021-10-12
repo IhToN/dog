@@ -37,3 +37,6 @@ dog - your personal dog
 **-f \<FILE>**, **-\-file \<FILE>**
 : **dog** says out the content of the file at path \<FILE>. \<FILE> is a path to a file from which **dog** should read out its content
 
+**-d \<FILE>**, **-\-doggo \<FILE>**
+: **dog** will display the "Whoof!" message but on different doggos.
+

@@ -8,19 +8,12 @@
 
 /* Dogoos! */
 
-const char dog_one[12][20] = {
+const char dog_one[5][20] = {
 	"          __",
 	" |_______/ V`-,",	
     "  }        /~~",
 	" /_)^ --,r'",
-	"|b      |b",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
+	"|b      |b"
 };
 
 const char dog_two[12][80] = {
@@ -36,6 +29,11 @@ const char dog_two[12][80] = {
 	"        bbbb                    bbbb				",
 	"								"
 };
+
+const int available_doggos = 2;
+
+void renderDogOne(char* bark);
+void renderDogTwo(char* bark);
 
 /*****************************************************************************/
 
